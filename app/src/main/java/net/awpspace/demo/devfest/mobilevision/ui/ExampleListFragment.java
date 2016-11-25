@@ -15,6 +15,7 @@ import net.awpspace.demo.devfest.mobilevision.ui.example.barcode.BarcodeActivity
 import net.awpspace.demo.devfest.mobilevision.ui.example.face.GooglyEyesActivity;
 import net.awpspace.demo.devfest.mobilevision.ui.example.multi.MultiTrackerActivity;
 import net.awpspace.demo.devfest.mobilevision.ui.example.ocr.OcrActivity;
+import net.awpspace.demo.devfest.mobilevision.ui.example.opencv.OpenCvFaceDetectionActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,6 +52,7 @@ public class ExampleListFragment extends Fragment implements ExampleListAdapter.
                     startActivity(new Intent(getActivity(), MultiTrackerActivity.class));
                     break;
                 case 4:
+                    startActivity(new Intent(getActivity(), OpenCvFaceDetectionActivity.class));
                     break;
             }
         }

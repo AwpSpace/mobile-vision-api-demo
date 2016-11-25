@@ -41,5 +41,8 @@
         <activity
             android:name=".ui.example.multi.MultiTrackerActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.example.opencv.OpenCvFaceDetectionActivity"
+            android:screenOrientation="landscape" />
     </application>
 </manifest>
