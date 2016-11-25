@@ -1,17 +1,11 @@
 package net.awpspace.demo.devfest.mobilevision.ui.example.multi;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.MultiDetector;
 import com.google.android.gms.vision.MultiProcessor;
@@ -19,11 +13,8 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.android.gms.vision.face.FaceDetector;
 
 import net.awpspace.demo.devfest.mobilevision.R;
-import net.awpspace.demo.devfest.mobilevision.ui.camera.CameraSourcePreview;
-import net.awpspace.demo.devfest.mobilevision.ui.camera.GraphicOverlay;
+import net.awpspace.demo.devfest.mobilevision.ui.example.MobileVisionBaseActivity;
 import net.awpspace.demo.devfest.mobilevision.ui.example.barcode.BarcodeTrackerFactory;
-
-import java.io.IOException;
 
 /**
  * Created by Luceefer on 11/25/16.
@@ -31,66 +22,12 @@ import java.io.IOException;
  * dev.awpspace@gmail.com
  */
 
-public class MultiTrackerActivity extends AppCompatActivity {
+public class MultiTrackerActivity extends MobileVisionBaseActivity {
 
-    private static final String TAG = "MultiTracker";
-
-    private static final int RC_HANDLE_GMS = 9001;
-
-    private CameraSource mCameraSource = null;
-    private CameraSourcePreview mPreview;
-    private GraphicOverlay mGraphicOverlay;
+    private static final String TAG = "MultiTrackerActivity";
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mobile_vision_scanner);
-
-        mPreview = (CameraSourcePreview) findViewById(R.id.camera_preview);
-        mGraphicOverlay = (GraphicOverlay) findViewById(R.id.graphic_overlay);
-
-        createCameraSource();
-    }
-
-    /**
-     * Restarts the camera.
-     */
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        startCameraSource();
-    }
-
-    /**
-     * Stops the camera.
-     */
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mPreview.stop();
-    }
-
-    /**
-     * Releases the resources associated with the camera source, the associated detectors, and the
-     * rest of the processing pipeline.
-     */
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mCameraSource != null) {
-            mCameraSource.release();
-        }
-    }
-
-    /**
-     * Creates and starts the camera.  Note that this uses a higher resolution in comparison
-     * to other detection examples to enable the barcode detector to detect small barcodes
-     * at long distances.
-     */
-    private void createCameraSource() {
-
-
+    protected void createCameraSource() {
         Context context = getApplicationContext();
 
         // A face detector is created to track faces.  An associated multi-processor instance
@@ -153,32 +90,5 @@ public class MultiTrackerActivity extends AppCompatActivity {
                 .setRequestedFps(15.0f)
                 .setAutoFocusEnabled(true)
                 .build();
-    }
-
-    /**
-     * Starts or restarts the camera source, if it exists.  If the camera source doesn't exist yet
-     * (e.g., because onResume was called before the camera source was created), this will be called
-     * again when the camera source is created.
-     */
-    private void startCameraSource() {
-
-        // check that the device has play services available.
-        int code = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(
-                getApplicationContext());
-        if (code != ConnectionResult.SUCCESS) {
-            Dialog dlg =
-                    GoogleApiAvailability.getInstance().getErrorDialog(this, code, RC_HANDLE_GMS);
-            dlg.show();
-        }
-
-        if (mCameraSource != null) {
-            try {
-                mPreview.start(mCameraSource, mGraphicOverlay);
-            } catch (IOException e) {
-                Log.e(TAG, "Unable to start camera source.", e);
-                mCameraSource.release();
-                mCameraSource = null;
-            }
-        }
     }
 }
