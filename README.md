@@ -6,3 +6,12 @@ I have a talk about Mobile Vision API in Android (Vietnamese), with comparison a
 Note that those examples are from Google, I just make some modifications for easier reading and organizing. I myself implement a simple face detection using OpenCV on Android for reference. Slide will be public after the conference ends.
 
 Contact me at diep@awpspace.net.
+
+# Notes
+Please make sure your local.properties has NDK and OpenCV variables set, like this:
+```
+ndk.dir=/Volumes/DATA/App/Android/ndk
+sdk.dir=/Volumes/DATA/App/Android
+opencv.dir=/Volumes/DATA/App/Android/opencvlibs/sdk/native/jni/include
+```
+OpenCV JNI Libraries must be copied from OpenCV Android SDK to /src/main/jniLibs. Those libraries are ignored from this repository.
