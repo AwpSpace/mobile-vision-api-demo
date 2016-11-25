@@ -1,6 +1,5 @@
-package net.awpspace.demo.devfest.mobilevision.ui.example.barcode;
+package net.awpspace.demo.devfest.mobilevision.ui.example.multi;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -14,12 +13,15 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.CameraSource;
+import com.google.android.gms.vision.MultiDetector;
 import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.google.android.gms.vision.face.FaceDetector;
 
 import net.awpspace.demo.devfest.mobilevision.R;
 import net.awpspace.demo.devfest.mobilevision.ui.camera.CameraSourcePreview;
 import net.awpspace.demo.devfest.mobilevision.ui.camera.GraphicOverlay;
+import net.awpspace.demo.devfest.mobilevision.ui.example.barcode.BarcodeTrackerFactory;
 
 import java.io.IOException;
 
@@ -29,14 +31,13 @@ import java.io.IOException;
  * dev.awpspace@gmail.com
  */
 
-public class BarcodeActivity extends AppCompatActivity {
+public class MultiTrackerActivity extends AppCompatActivity {
 
-    private static final String TAG = "ExampleBarcode";
+    private static final String TAG = "MultiTracker";
 
-    // intent request code to handle updating play services if needed.
     private static final int RC_HANDLE_GMS = 9001;
 
-    private CameraSource mCameraSource;
+    private CameraSource mCameraSource = null;
     private CameraSourcePreview mPreview;
     private GraphicOverlay mGraphicOverlay;
 
@@ -47,7 +48,8 @@ public class BarcodeActivity extends AppCompatActivity {
 
         mPreview = (CameraSourcePreview) findViewById(R.id.camera_preview);
         mGraphicOverlay = (GraphicOverlay) findViewById(R.id.graphic_overlay);
-        createCameraSource(true, false);
+
+        createCameraSource();
     }
 
     /**
@@ -56,6 +58,7 @@ public class BarcodeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         startCameraSource();
     }
 
@@ -65,9 +68,7 @@ public class BarcodeActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (mPreview != null) {
-            mPreview.stop();
-        }
+        mPreview.stop();
     }
 
     /**
@@ -77,8 +78,8 @@ public class BarcodeActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mPreview != null) {
-            mPreview.release();
+        if (mCameraSource != null) {
+            mCameraSource.release();
         }
     }
 
@@ -86,13 +87,20 @@ public class BarcodeActivity extends AppCompatActivity {
      * Creates and starts the camera.  Note that this uses a higher resolution in comparison
      * to other detection examples to enable the barcode detector to detect small barcodes
      * at long distances.
-     * <p>
-     * Suppressing InlinedApi since there is a check that the minimum version is met before using
-     * the constant.
      */
-    @SuppressLint("InlinedApi")
-    private void createCameraSource(boolean autoFocus, boolean useFlash) {
+    private void createCameraSource() {
+
+
         Context context = getApplicationContext();
+
+        // A face detector is created to track faces.  An associated multi-processor instance
+        // is set to receive the face detection results, track the faces, and maintain graphics for
+        // each face on screen.  The factory is used by the multi-processor to create a separate
+        // tracker instance for each face.
+        FaceDetector faceDetector = new FaceDetector.Builder(context).build();
+        FaceTrackerFactory faceFactory = new FaceTrackerFactory(mGraphicOverlay);
+        faceDetector.setProcessor(
+                new MultiProcessor.Builder<>(faceFactory).build());
 
         // A barcode detector is created to track barcodes.  An associated multi-processor instance
         // is set to receive the barcode detection results, track the barcodes, and maintain
@@ -103,7 +111,17 @@ public class BarcodeActivity extends AppCompatActivity {
         barcodeDetector.setProcessor(
                 new MultiProcessor.Builder<>(barcodeFactory).build());
 
-        if (!barcodeDetector.isOperational()) {
+        // A multi-detector groups the two detectors together as one detector.  All images received
+        // by this detector from the camera will be sent to each of the underlying detectors, which
+        // will each do face and barcode detection, respectively.  The detection results from each
+        // are then sent to associated tracker instances which maintain per-item graphics on the
+        // screen.
+        MultiDetector multiDetector = new MultiDetector.Builder()
+                .add(faceDetector)
+                .add(barcodeDetector)
+                .build();
+
+        if (!multiDetector.isOperational()) {
             // Note: The first time that an app using the barcode or face API is installed on a
             // device, GMS will download a native libraries to the device in order to do detection.
             // Usually this completes before the app is run for the first time.  But if that
@@ -129,13 +147,11 @@ public class BarcodeActivity extends AppCompatActivity {
         // Creates and starts the camera.  Note that this uses a higher resolution in comparison
         // to other detection examples to enable the barcode detector to detect small barcodes
         // at long distances.
-        CameraSource.Builder builder = new CameraSource.Builder(getApplicationContext(), barcodeDetector)
+        mCameraSource = new CameraSource.Builder(getApplicationContext(), multiDetector)
                 .setFacing(CameraSource.CAMERA_FACING_BACK)
-                .setRequestedPreviewSize(1280, 720)
+                .setRequestedPreviewSize(1600, 1024)
                 .setRequestedFps(15.0f)
-                .setAutoFocusEnabled(true);
-
-        mCameraSource = builder
+                .setAutoFocusEnabled(true)
                 .build();
     }
 
@@ -144,7 +160,8 @@ public class BarcodeActivity extends AppCompatActivity {
      * (e.g., because onResume was called before the camera source was created), this will be called
      * again when the camera source is created.
      */
-    private void startCameraSource() throws SecurityException {
+    private void startCameraSource() {
+
         // check that the device has play services available.
         int code = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(
                 getApplicationContext());

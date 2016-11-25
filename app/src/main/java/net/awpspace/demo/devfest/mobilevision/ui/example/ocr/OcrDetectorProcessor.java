@@ -28,9 +28,9 @@ import net.awpspace.demo.devfest.mobilevision.ui.camera.GraphicOverlay;
  */
 public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
 
-    private GraphicOverlay<OcrGraphic> mGraphicOverlay;
+    private GraphicOverlay mGraphicOverlay;
 
-    OcrDetectorProcessor(GraphicOverlay<OcrGraphic> ocrGraphicOverlay) {
+    OcrDetectorProcessor(GraphicOverlay ocrGraphicOverlay) {
         mGraphicOverlay = ocrGraphicOverlay;
     }
 

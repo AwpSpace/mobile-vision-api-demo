@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -14,10 +13,10 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.text.TextRecognizer;
 
 import net.awpspace.demo.devfest.mobilevision.R;
-import net.awpspace.demo.devfest.mobilevision.ui.camera.CameraSource;
 import net.awpspace.demo.devfest.mobilevision.ui.camera.CameraSourcePreview;
 import net.awpspace.demo.devfest.mobilevision.ui.camera.GraphicOverlay;
 
@@ -38,7 +37,7 @@ public class OcrActivity extends AppCompatActivity {
 
     private CameraSource mCameraSource;
     private CameraSourcePreview mPreview;
-    private GraphicOverlay<OcrGraphic> mGraphicOverlay;
+    private GraphicOverlay mGraphicOverlay;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,7 +45,7 @@ public class OcrActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mobile_vision_scanner);
 
         mPreview = (CameraSourcePreview) findViewById(R.id.camera_preview);
-        mGraphicOverlay = (GraphicOverlay<OcrGraphic>) findViewById(R.id.graphic_overlay);
+        mGraphicOverlay = (GraphicOverlay) findViewById(R.id.graphic_overlay);
 
         createCameraSource(true, false);
     }
@@ -131,8 +130,7 @@ public class OcrActivity extends AppCompatActivity {
                         .setFacing(CameraSource.CAMERA_FACING_BACK)
                         .setRequestedPreviewSize(1280, 1024)
                         .setRequestedFps(2.0f)
-                        .setFlashMode(useFlash ? Camera.Parameters.FLASH_MODE_TORCH : null)
-                        .setFocusMode(autoFocus ? Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE : null)
+                        .setAutoFocusEnabled(true)
                         .build();
     }
 

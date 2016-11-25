@@ -13,26 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.awpspace.demo.devfest.mobilevision.ui.example.barcode;
+package net.awpspace.demo.devfest.mobilevision.ui.example.multi;
 
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.Tracker;
-import com.google.android.gms.vision.barcode.Barcode;
 
 import net.awpspace.demo.devfest.mobilevision.ui.camera.GraphicOverlay;
 
 /**
- * Generic tracker which is used for tracking or reading a barcode (and can really be used for
+ * Generic tracker which is used for tracking either a face or a barcode (and can really be used for
  * any type of item).  This is used to receive newly detected items, add a graphical representation
  * to an overlay, update the graphics as the item changes, and remove the graphics when the item
  * goes away.
  */
-class BarcodeGraphicTracker extends Tracker<Barcode> {
-
+class GraphicTracker<T> extends Tracker<T> {
     private GraphicOverlay mOverlay;
-    private BarcodeGraphic mGraphic;
+    private TrackedGraphic<T> mGraphic;
 
-    BarcodeGraphicTracker(GraphicOverlay overlay, BarcodeGraphic graphic) {
+    GraphicTracker(GraphicOverlay overlay, TrackedGraphic<T> graphic) {
         mOverlay = overlay;
         mGraphic = graphic;
     }
@@ -41,7 +39,7 @@ class BarcodeGraphicTracker extends Tracker<Barcode> {
      * Start tracking the detected item instance within the item overlay.
      */
     @Override
-    public void onNewItem(int id, Barcode item) {
+    public void onNewItem(int id, T item) {
         mGraphic.setId(id);
     }
 
@@ -49,18 +47,18 @@ class BarcodeGraphicTracker extends Tracker<Barcode> {
      * Update the position/characteristics of the item within the overlay.
      */
     @Override
-    public void onUpdate(Detector.Detections<Barcode> detectionResults, Barcode item) {
+    public void onUpdate(Detector.Detections<T> detectionResults, T item) {
         mOverlay.add(mGraphic);
         mGraphic.updateItem(item);
     }
 
     /**
-     * Hide the graphic when the corresponding object was not detected.  This can happen for
-     * intermediate frames temporarily, for example if the object was momentarily blocked from
+     * Hide the graphic when the corresponding face was not detected.  This can happen for
+     * intermediate frames temporarily, for example if the face was momentarily blocked from
      * view.
      */
     @Override
-    public void onMissing(Detector.Detections<Barcode> detectionResults) {
+    public void onMissing(Detector.Detections<T> detectionResults) {
         mOverlay.remove(mGraphic);
     }
 

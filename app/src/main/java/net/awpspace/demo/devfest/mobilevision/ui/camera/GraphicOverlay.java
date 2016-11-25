@@ -23,16 +23,14 @@ import android.view.View;
 import com.google.android.gms.vision.CameraSource;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
 /**
  * A view which renders a series of custom graphics to be overlayed on top of an associated preview
  * (i.e., the camera preview).  The creator can add graphics objects, update the objects, and remove
  * them, triggering the appropriate drawing and invalidation within the view.<p>
  *
- * Supports scaling and mirroring of the graphics relative the camera's preview properties.  The
+ * Supports scaling and mirroring of the graphics relative to the camera's preview properties.  The
  * idea is that detection items are expressed in terms of a preview size, but need to be scaled up
  * to the full view size, and also mirrored in the case of the front-facing camera.<p>
  *
@@ -45,14 +43,14 @@ import java.util.Vector;
  * from the preview's coordinate system to the view coordinate system.</li>
  * </ol>
  */
-public class GraphicOverlay<T extends GraphicOverlay.Graphic> extends View {
+public class GraphicOverlay extends View {
     private final Object mLock = new Object();
     private int mPreviewWidth;
     private float mWidthScaleFactor = 1.0f;
     private int mPreviewHeight;
     private float mHeightScaleFactor = 1.0f;
     private int mFacing = CameraSource.CAMERA_FACING_BACK;
-    private Set<T> mGraphics = new HashSet<>();
+    private Set<Graphic> mGraphics = new HashSet<>();
 
     /**
      * Base class for a custom graphics object to be rendered within the graphic overlay.  Subclass
@@ -137,7 +135,7 @@ public class GraphicOverlay<T extends GraphicOverlay.Graphic> extends View {
     /**
      * Adds a graphic to the overlay.
      */
-    public void add(T graphic) {
+    public void add(Graphic graphic) {
         synchronized (mLock) {
             mGraphics.add(graphic);
         }
@@ -147,35 +145,11 @@ public class GraphicOverlay<T extends GraphicOverlay.Graphic> extends View {
     /**
      * Removes a graphic from the overlay.
      */
-    public void remove(T graphic) {
+    public void remove(Graphic graphic) {
         synchronized (mLock) {
             mGraphics.remove(graphic);
         }
         postInvalidate();
-    }
-
-    /**
-     * Returns a copy (as a list) of the set of all active graphics.
-     * @return list of all active graphics.
-     */
-    public List<T> getGraphics() {
-        synchronized (mLock) {
-            return new Vector(mGraphics);
-        }
-    }
-
-    /**
-     * Returns the horizontal scale factor.
-     */
-    public float getWidthScaleFactor() {
-        return mWidthScaleFactor;
-    }
-
-    /**
-     * Returns the vertical scale factor.
-     */
-    public float getHeightScaleFactor() {
-        return mHeightScaleFactor;
     }
 
     /**

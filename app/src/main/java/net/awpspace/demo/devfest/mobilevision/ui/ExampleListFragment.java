@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 
 import net.awpspace.demo.devfest.mobilevision.R;
 import net.awpspace.demo.devfest.mobilevision.ui.example.barcode.BarcodeActivity;
+import net.awpspace.demo.devfest.mobilevision.ui.example.face.GooglyEyesActivity;
+import net.awpspace.demo.devfest.mobilevision.ui.example.multi.MultiTrackerActivity;
 import net.awpspace.demo.devfest.mobilevision.ui.example.ocr.OcrActivity;
 
 import butterknife.BindView;
@@ -37,6 +39,7 @@ public class ExampleListFragment extends Fragment implements ExampleListAdapter.
         if (((ExampleListActivity) getActivity()).checkForPermission()) {
             switch (index) {
                 case 0:
+                    startActivity(new Intent(getActivity(), GooglyEyesActivity.class));
                     break;
                 case 1:
                     startActivity(new Intent(getActivity(), BarcodeActivity.class));
@@ -45,6 +48,7 @@ public class ExampleListFragment extends Fragment implements ExampleListAdapter.
                     startActivity(new Intent(getActivity(), OcrActivity.class));
                     break;
                 case 3:
+                    startActivity(new Intent(getActivity(), MultiTrackerActivity.class));
                     break;
                 case 4:
                     break;
