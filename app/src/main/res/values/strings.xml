@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DevFest MobileVision</string>
+    <string name="low_storage_error">Low Storage Error</string>
 </resources>
