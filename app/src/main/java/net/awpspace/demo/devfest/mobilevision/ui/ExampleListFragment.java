@@ -1,9 +1,9 @@
 package net.awpspace.demo.devfest.mobilevision.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import net.awpspace.demo.devfest.mobilevision.R;
+import net.awpspace.demo.devfest.mobilevision.ui.example.barcode.BarcodeActivity;
+import net.awpspace.demo.devfest.mobilevision.ui.example.ocr.OcrActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,13 +23,33 @@ import butterknife.ButterKnife;
  * dev.awpspace@gmail.com
  */
 
-public class ExampleListFragment extends Fragment {
+public class ExampleListFragment extends Fragment implements ExampleListAdapter.ExampleHandler {
 
     @BindView(R.id.example_list)
     RecyclerView recyclerView;
 
     public static Fragment newInstance() {
         return new ExampleListFragment();
+    }
+
+    @Override
+    public void viewExample(int index) {
+        if (((ExampleListActivity) getActivity()).checkForPermission()) {
+            switch (index) {
+                case 0:
+                    break;
+                case 1:
+                    startActivity(new Intent(getActivity(), BarcodeActivity.class));
+                    break;
+                case 2:
+                    startActivity(new Intent(getActivity(), OcrActivity.class));
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+            }
+        }
     }
 
     @Nullable
@@ -44,6 +66,6 @@ public class ExampleListFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(new ExampleListAdapter());
+        recyclerView.setAdapter(new ExampleListAdapter(this));
     }
 }

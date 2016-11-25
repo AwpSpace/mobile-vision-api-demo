@@ -20,8 +20,15 @@ import butterknife.ButterKnife;
 
 public class ExampleListAdapter extends RecyclerView.Adapter<ExampleListAdapter.ExampleHolder> {
 
-    public ExampleListAdapter() {
-        super();
+    interface ExampleHandler {
+
+        void viewExample(int index);
+    }
+
+    private ExampleHandler handler;
+
+    ExampleListAdapter(ExampleHandler handler) {
+        this.handler = handler;
     }
 
     @Override
@@ -59,6 +66,8 @@ public class ExampleListAdapter extends RecyclerView.Adapter<ExampleListAdapter.
                 holder.exampleBackground.setImageResource(R.drawable.example_opencv);
                 break;
         }
+
+        holder.itemView.setOnClickListener(view -> handler.viewExample(position));
     }
 
     static class ExampleHolder extends RecyclerView.ViewHolder {

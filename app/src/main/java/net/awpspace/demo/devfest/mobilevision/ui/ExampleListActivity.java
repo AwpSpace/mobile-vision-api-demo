@@ -28,6 +28,16 @@ public class ExampleListActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+    @AfterPermissionGranted(REQ_ACCESS_CAMERA)
+    public boolean checkForPermission() {
+        String[] perms = {Manifest.permission.CAMERA};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            return true;
+        }
+        EasyPermissions.requestPermissions(this, "If you want to see the demo, why do not accept :'(", REQ_ACCESS_CAMERA, perms);
+        return false;
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -54,13 +64,5 @@ public class ExampleListActivity extends AppCompatActivity {
         }
 
         checkForPermission();
-    }
-
-    @AfterPermissionGranted(REQ_ACCESS_CAMERA)
-    private void checkForPermission() {
-        String[] perms = {Manifest.permission.CAMERA};
-        if (!EasyPermissions.hasPermissions(this, perms)) {
-            EasyPermissions.requestPermissions(this, "If you want to see the demo, why do not accept :'(", REQ_ACCESS_CAMERA, perms);
-        }
     }
 }
