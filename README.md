@@ -3,9 +3,9 @@ Google Developers Festival Hanoi 2016 is held in Posts and Telecommunications In
 
 I have a talk about Mobile Vision API in Android (Vietnamese), with comparison against OpenCV. This repository contains demo code from multiple examples of Google about Mobile Vision API, including face detection, a funny overlay graphic within detected face, barcode detection, text recognition and usage of multi-detectors. 
 
-Note that those examples are from Google, I just make some modifications for easier reading and organizing. I myself implement a simple face detection using OpenCV on Android for reference. Slide will be public after the conference ends.
+Note that those examples are from Google, I just make some modifications for easier reading and organizing. I myself implement a simple face detection using OpenCV on Android for reference. The slide is shared at https://docs.google.com/presentation/d/1cSbQDsil3YyHCQIEi2HSBmhy533NLmtt7jKUg2qfuvM/edit?usp=sharing (English).
 
-Contact me at diep@awpspace.net.
+Contact me at diep@awpspace.net if you have any question.
 
 # Notes
 Please make sure your local.properties has NDK and OpenCV variables set, like this:
